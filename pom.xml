@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.erethon</groupId>
+    <artifactId>itemstacklib-parent</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+    <name>ItemStackLib</name>
+    <url>https://dre2n.github.io</url>
+    <description>Library to modify some ItemStack traits that Bukkit doesn't support</description>
+    <modules>
+        <module>abstract</module>
+        <module>core</module>
+        <module>craftbukkit_1_12_R1</module>
+        <module>craftbukkit_1_11_R1</module>
+        <module>craftbukkit_1_10_R1</module>
+        <module>craftbukkit_1_9_R2</module>
+        <module>craftbukkit_1_9_R1</module>
+        <module>craftbukkit_1_8_R3</module>
+        <module>craftbukkit_1_8_R2</module>
+        <module>craftbukkit_1_8_R1</module>
+    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.12.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.erethon</groupId>
+            <artifactId>compatibility</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>dre-repo</id>
+            <url>https://erethon.de/repo/</url>
+        </repository>
+    </repositories>
+</project>
