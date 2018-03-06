@@ -2,13 +2,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.erethon</groupId>
     <artifactId>itemstacklib-craftbukkit_1_8_R1</artifactId>
-    <version>${proect.parent.version}</version>
+    <version>${project.parent.version}</version>
     <packaging>jar</packaging>
     <name>itemstacklib-craftbukkit_1_8_R1</name>
     <parent>
         <groupId>de.erethon</groupId>
         <artifactId>itemstacklib-parent</artifactId>
-        <version>1.0</version>
+        <version>1.0.1</version>
     </parent>
     <build>
         <plugins>
