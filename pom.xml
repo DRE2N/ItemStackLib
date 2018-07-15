@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.erethon</groupId>
     <artifactId>itemstacklib-parent</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <packaging>pom</packaging>
     <name>ItemStackLib</name>
     <url>https://dre2n.github.io</url>
@@ -10,6 +10,7 @@
     <modules>
         <module>abstract</module>
         <module>core</module>
+        <module>craftbukkit_1_13_R1</module>
         <module>craftbukkit_1_12_R1</module>
         <module>craftbukkit_1_11_R1</module>
         <module>craftbukkit_1_10_R1</module>
@@ -23,7 +24,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
+            <version>1.13-pre7-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

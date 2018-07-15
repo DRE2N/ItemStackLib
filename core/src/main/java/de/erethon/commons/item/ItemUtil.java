@@ -30,6 +30,9 @@ public class ItemUtil {
             case NEW:
                 internals = new New();
                 break;
+            case v1_13_R1:
+                internals = new v1_13_R1();
+                break;
             case v1_12_R1:
                 internals = new v1_12_R1();
                 break;
