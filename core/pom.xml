@@ -8,7 +8,7 @@
     <parent>
         <groupId>de.erethon</groupId>
         <artifactId>itemstacklib-parent</artifactId>
-        <version>1.0.5</version>
+        <version>1.0.6</version>
     </parent>
     <build>
         <directory>../target</directory>
@@ -50,6 +50,13 @@
         <dependency>
             <groupId>de.erethon</groupId>
             <artifactId>itemstacklib-abstract</artifactId>
+            <version>${project.parent.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.erethon</groupId>
+            <artifactId>itemstacklib-craftbukkit_1_13_R2</artifactId>
             <version>${project.parent.version}</version>
             <type>jar</type>
             <scope>compile</scope>
