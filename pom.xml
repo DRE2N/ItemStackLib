@@ -34,9 +34,5 @@
             <id>dre-repo</id>
             <url>https://erethon.de/repo/</url>
         </repository>
-        <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-        </repository>
     </repositories>
 </project>
