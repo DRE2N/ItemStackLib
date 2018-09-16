@@ -19,29 +19,31 @@ import org.bukkit.attribute.Attribute;
  */
 public enum InternalAttribute {
 
-    GENERIC_ARMOR(Attribute.GENERIC_ARMOR, "generic.armor"),
-    GENERIC_ARMOR_TOUGHNESS(Attribute.GENERIC_ARMOR_TOUGHNESS, "generic.armorToughness"),
-    GENERIC_ATTACK_DAMAGE(Attribute.GENERIC_ATTACK_DAMAGE, "generic.attackDamage"),
-    GENERIC_ATTACK_SPEED(Attribute.GENERIC_ATTACK_SPEED, "generic.attackSpeed"),
-    GENERIC_FLYING_SPEED(Attribute.GENERIC_FLYING_SPEED, "generic.flyingSpeed"),
-    GENERIC_FOLLOW_RANGE(Attribute.GENERIC_FOLLOW_RANGE, "generic.followRange"),
-    GENERIC_KNOCKBACK_RESISTANCE(Attribute.GENERIC_KNOCKBACK_RESISTANCE, "generic.knockbackResistance"),
-    GENERIC_LUCK(Attribute.GENERIC_LUCK, "generic.luck"),
-    GENERIC_MAX_HEALTH(Attribute.GENERIC_MAX_HEALTH, "generic.maxHealth"),
-    GENERIC_MOVEMENT_SPEED(Attribute.GENERIC_MOVEMENT_SPEED, "generic.movementSpeed"),
-    HORSE_JUMP_STRENGTH(Attribute.HORSE_JUMP_STRENGTH, "horse.jumpStrength"),
-    ZOMBIE_SPAWN_REINFORCEMENTS(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS, "zombie.spawnReinforcements");
+    GENERIC_ARMOR("generic.armor"),
+    GENERIC_ARMOR_TOUGHNESS("generic.armorToughness"),
+    GENERIC_ATTACK_DAMAGE("generic.attackDamage"),
+    GENERIC_ATTACK_SPEED("generic.attackSpeed"),
+    GENERIC_FLYING_SPEED("generic.flyingSpeed"),
+    GENERIC_FOLLOW_RANGE("generic.followRange"),
+    GENERIC_KNOCKBACK_RESISTANCE("generic.knockbackResistance"),
+    GENERIC_LUCK("generic.luck"),
+    GENERIC_MAX_HEALTH("generic.maxHealth"),
+    GENERIC_MOVEMENT_SPEED("generic.movementSpeed"),
+    HORSE_JUMP_STRENGTH("horse.jumpStrength"),
+    ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawnReinforcements");
 
-    private Attribute bukkit;
     private String internal;
+    private Object bukkit;
 
-    InternalAttribute(Attribute bukkit, String internal) {
-        this.bukkit = bukkit;
+    InternalAttribute(String internal) {
         this.internal = internal;
     }
 
     public Attribute getBukkit() {
-        return bukkit;
+        if (bukkit == null) {
+            bukkit = Attribute.valueOf(name());
+        }
+        return (Attribute) bukkit;
     }
 
     public String getInternal() {

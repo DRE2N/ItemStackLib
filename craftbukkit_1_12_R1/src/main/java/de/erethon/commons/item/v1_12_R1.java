@@ -12,13 +12,14 @@
  */
 package de.erethon.commons.item;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
-import net.minecraft.server.v1_12_R1.NBTTagByte;
+import net.minecraft.server.v1_12_R1.NBTBase;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.NBTTagDouble;
-import net.minecraft.server.v1_12_R1.NBTTagInt;
 import net.minecraft.server.v1_12_R1.NBTTagList;
-import net.minecraft.server.v1_12_R1.NBTTagString;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,54 +29,150 @@ import org.bukkit.inventory.ItemStack;
 class v1_12_R1 extends InternalsProvider {
 
     @Override
-    ItemStack setAttribute(ItemStack itemStack, String attributeName, double amount, byte operation, String... slots) {
-        net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(itemStack);
+    Collection<AttributeWrapper> getAttributes(ItemStack item) {
+        Collection<AttributeWrapper> attributes = new ArrayList<>();
+        net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
 
-        NBTTagCompound compound = nmsStack.getTag();
-        if (compound == null) {
-            compound = new NBTTagCompound();
+        NBTTagCompound tag = nmsStack.getTag();
+        if (tag == null) {
+            return attributes;
         }
 
-        NBTTagList modifiers = compound.getList("AttributeModifiers", 10);
-        for (String slot : slots) {
-            NBTTagCompound attribute = new NBTTagCompound();
-            attribute.set("AttributeName", new NBTTagString(attributeName));
-            attribute.set("Name", new NBTTagString(attributeName));
-            attribute.set("Amount", new NBTTagDouble(amount));
-            attribute.set("Operation", new NBTTagByte(operation));
-            attribute.set("UUIDLeast", new NBTTagInt(new Random().nextInt(50000) + 1));
-            attribute.set("UUIDMost", new NBTTagInt(new Random().nextInt(100000) + 50001));
-            attribute.set("Slot", new NBTTagString(slot));
-            modifiers.add(attribute);
+        NBTTagList modifiers = tag.getList("AttributeModifiers", 10);
+        for (int i = 0; i < modifiers.size(); i++) {
+            NBTBase attribute = modifiers.get(i);
+            if (attribute instanceof NBTTagCompound) {
+                attributes.add(getAttribute((NBTTagCompound) attribute));
+            }
         }
 
-        compound.set("AttributeModifiers", modifiers);
-        nmsStack.setTag(compound);
+        return attributes;
+    }
+
+    AttributeWrapper getAttribute(NBTTagCompound tag) {
+        InternalAttribute attribute = InternalAttribute.fromInternal(tag.getString("AttributeName"));
+        String name = tag.getString("Name");
+        double amount = tag.getDouble("Amount");
+        InternalOperation operation = InternalOperation.fromInternal(tag.getByte("Operation"));
+        InternalSlot slot = InternalSlot.fromInternal(tag.getString("Slot"));
+        return new AttributeWrapper(attribute, name, amount, operation, slot);
+    }
+
+    @Override
+    ItemStack removeAttribute(ItemStack item, String name, boolean type) {
+        net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
+
+        NBTTagCompound tag = nmsStack.getTag();
+        if (tag == null) {
+            return item.clone();
+        }
+
+        NBTTagList modifiers = tag.getList("AttributeModifiers", 10);
+        List<Integer> rem = new ArrayList<>();
+        for (int i = 0; i < modifiers.size(); i++) {
+            NBTBase attribute = modifiers.get(i);
+            if (attribute instanceof NBTTagCompound) {
+                if (((NBTTagCompound) attribute).getString(type ? "AttributeName" : "Name").equals(name)) {
+                    rem.add(i);
+                }
+            }
+        }
+        Collections.reverse(rem);
+        rem.forEach(i -> modifiers.remove(i));
 
         return CraftItemStack.asBukkitCopy(nmsStack);
     }
 
     @Override
-    ItemStack setSkullOwner(ItemStack itemStack, String id, String textureValue) {
-        net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(itemStack);
+    ItemStack setAttribute(ItemStack item, String attributeName, String name, double amount, byte operation, String... slots) {
+        net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
 
-        NBTTagCompound compound = nmsStack.getTag();
-        if (compound == null) {
-            compound = new NBTTagCompound();
+        NBTTagCompound tag = nmsStack.getTag();
+        if (tag == null) {
+            tag = new NBTTagCompound();
+        }
+
+        NBTTagList modifiers = tag.getList("AttributeModifiers", 10);
+        if (slots.length == 0) {
+            modifiers.add(createModifier(attributeName, name, amount, operation, null));
+        } else {
+            for (String slot : slots) {
+                modifiers.add(createModifier(attributeName, name, amount, operation, slot));
+            }
+        }
+
+        tag.set("AttributeModifiers", modifiers);
+        nmsStack.setTag(tag);
+
+        return CraftItemStack.asBukkitCopy(nmsStack);
+    }
+
+    private NBTTagCompound createModifier(String attributeName, String name, double amount, byte operation, String slot) {
+        NBTTagCompound modifier = new NBTTagCompound();
+        modifier.setString("AttributeName", attributeName);
+        modifier.setString("Name", name);
+        modifier.setDouble("Amount", amount);
+        modifier.setByte("Operation", operation);
+        modifier.setInt("UUIDLeast", new Random().nextInt(50000) + 1);
+        modifier.setInt("UUIDMost", new Random().nextInt(100000) + 50001);
+        if (slot != null) {
+            modifier.setString("Slot", slot);
+        }
+        return modifier;
+    }
+
+    @Override
+    String getTextureValue(ItemStack item) {
+        net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
+
+        NBTTagCompound tag = nmsStack.getTag();
+        if (tag == null) {
+            return null;
+        }
+
+        NBTTagCompound skullOwner = tag.getCompound("SkullOwner");
+        if (skullOwner == null) {
+            return null;
+        }
+        NBTTagCompound properties = skullOwner.getCompound("Properties");
+        if (properties == null) {
+            return null;
+        }
+        NBTTagList textures = properties.getList("textures", 10);
+        if (textures == null) {
+            return null;
+        }
+
+        for (int i = 0; i < textures.size(); i++) {
+            NBTBase base = textures.get(i);
+            if (base instanceof NBTTagCompound && ((NBTTagCompound) base).hasKeyOfType("Value", 8)) {
+                return ((NBTTagCompound) base).getString("Value");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    ItemStack setSkullOwner(ItemStack item, String id, String textureValue) {
+        net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
+
+        NBTTagCompound tag = nmsStack.getTag();
+        if (tag == null) {
+            tag = new NBTTagCompound();
         }
 
         NBTTagCompound skullOwner = new NBTTagCompound();
-        skullOwner.set("Id", new NBTTagString(id));
+        skullOwner.setString("Id", id);
         NBTTagCompound properties = new NBTTagCompound();
         NBTTagList textures = new NBTTagList();
         NBTTagCompound value = new NBTTagCompound();
-        value.set("Value", new NBTTagString(textureValue));
+        value.setString("Value", textureValue);
         textures.add(value);
         properties.set("textures", textures);
         skullOwner.set("Properties", properties);
 
-        compound.set("SkullOwner", skullOwner);
-        nmsStack.setTag(compound);
+        tag.set("SkullOwner", skullOwner);
+        nmsStack.setTag(tag);
 
         return CraftItemStack.asBukkitCopy(nmsStack);
     }

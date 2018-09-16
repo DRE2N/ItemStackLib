@@ -25,25 +25,79 @@ import org.bukkit.inventory.ItemStack;
  */
 public class AttributeWrapper {
 
+    /**
+     * Returns a utility object to build an AttributeWrapper
+     *
+     * @return a utility object to build an AttributeWrapper
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private InternalAttribute attribute;
+        private String name;
+        private double amount = Double.MIN_VALUE;
+        private InternalOperation operation;
+        private List<InternalSlot> slots;
+
+        Builder() {
+        }
+
+        public Builder attribute(InternalAttribute attribute) {
+            this.attribute = attribute;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder amount(double amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public Builder operation(InternalOperation operation) {
+            this.operation = operation;
+            return this;
+        }
+
+        public Builder slots(InternalSlot... slots) {
+            this.slots = new ArrayList<>(Arrays.asList(slots));
+            return this;
+        }
+
+        public AttributeWrapper build() {
+            if (attribute == null || amount == Double.MIN_VALUE || operation == null) {
+                throw new IllegalStateException("An attribute modifier requires at least an attribute, an amount and an operation");
+            }
+            return new AttributeWrapper(attribute, name, amount, operation, slots);
+        }
+
+    }
+
     private InternalAttribute attribute;
+    private String name;
     private double amount;
     private InternalOperation operation;
     private List<InternalSlot> slots;
 
-    public AttributeWrapper(InternalAttribute attribute, double amount, InternalOperation operation, InternalSlot... slots) {
+    public AttributeWrapper(InternalAttribute attribute, String name, double amount, InternalOperation operation, List<InternalSlot> slots) {
         setAttribute(attribute);
+        if (name == null) {
+            name = attribute.getInternal();
+        }
+        setName(name);
         setAmount(amount);
         setOperation(operation);
-        this.slots = new ArrayList<>();
-        addSlots(slots);
+        setSlots(slots);
     }
 
-    public AttributeWrapper(Attribute attribute, double amount, Operation operation, EquipmentSlot... slots) {
-        setAttribute(attribute);
-        setAmount(amount);
-        setOperation(operation);
-        this.slots = new ArrayList<>();
-        addSlots(slots);
+    public AttributeWrapper(InternalAttribute attribute, String name, double amount, InternalOperation operation, InternalSlot... slots) {
+        this(attribute, name, amount, operation, Arrays.asList(slots));
     }
 
     public InternalAttribute getAttribute() {
@@ -56,6 +110,14 @@ public class AttributeWrapper {
 
     public void setAttribute(Attribute attribute) {
         this.attribute = InternalAttribute.fromBukkit(attribute);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getAmount() {
@@ -102,12 +164,25 @@ public class AttributeWrapper {
         }
     }
 
+    public void setSlots(List<InternalSlot> slots) {
+        this.slots = slots;
+    }
+
     /**
-     * @param item
-     * applies the wrapped attribute to the provided ItemStack
+     * Applies the wrapped attribute to an ItemStack.
+     * <p>
+     * Returns a copy of the ItemStack with the attribute applied to it.
+     *
+     * @param item the ItemStack
+     * @return a copy of the ItemStack with this attribute applied to it
      */
     public ItemStack applyTo(ItemStack item) {
         return ItemUtil.setAttribute(item, this);
+    }
+
+    @Override
+    public String toString() {
+        return "AttributeWrapper{attribute=" + attribute + "; name=" + name + "; amount=" + amount + "; operation=" + operation + "; slots=" + slots + "}";
     }
 
 }

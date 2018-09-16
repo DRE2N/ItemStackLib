@@ -12,19 +12,22 @@
  */
 package de.erethon.commons.item;
 
+import java.util.Collection;
 import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Daniel Saukel
  */
-class InternalsProvider {
+abstract class InternalsProvider {
 
-    ItemStack setAttribute(ItemStack itemStack, String attributeName, double amount, byte operation, String... slots) {
-        return itemStack;
-    }
+    abstract Collection<AttributeWrapper> getAttributes(ItemStack itemStack);
 
-    ItemStack setSkullOwner(ItemStack itemStack, String id, String textureValue) {
-        return itemStack;
-    }
+    abstract ItemStack removeAttribute(ItemStack itemStack, String name, boolean type);
+
+    abstract ItemStack setAttribute(ItemStack itemStack, String attributeName, String name, double amount, byte operation, String... slots);
+
+    abstract String getTextureValue(ItemStack itemStack);
+
+    abstract ItemStack setSkullOwner(ItemStack itemStack, String id, String textureValue);
 
 }

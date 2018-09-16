@@ -19,23 +19,25 @@ import org.bukkit.inventory.EquipmentSlot;
  */
 public enum InternalSlot {
 
-    MAIN_HAND(EquipmentSlot.HAND, "mainhand"),
-    OFF_HAND(EquipmentSlot.OFF_HAND, "offhand"),
-    HEAD(EquipmentSlot.HEAD, "head"),
-    TORSO(EquipmentSlot.CHEST, "torso"),
-    LEGS(EquipmentSlot.LEGS, "legs"),
-    FEET(EquipmentSlot.FEET, "feet");
+    HAND("mainhand"),
+    OFF_HAND("offhand"),
+    HEAD("head"),
+    CHEST("torso"),
+    LEGS("legs"),
+    FEET("feet");
 
-    private EquipmentSlot bukkit;
+    private Object bukkit;
     private String internal;
 
-    InternalSlot(EquipmentSlot bukkit, String internal) {
-        this.bukkit = bukkit;
+    InternalSlot(String internal) {
         this.internal = internal;
     }
 
     public EquipmentSlot getBukkit() {
-        return bukkit;
+        if (bukkit == null) {
+            bukkit = EquipmentSlot.valueOf(name());
+        }
+        return (EquipmentSlot) bukkit;
     }
 
     public String getInternal() {

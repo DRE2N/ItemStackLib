@@ -19,20 +19,22 @@ import org.bukkit.attribute.AttributeModifier.Operation;
  */
 public enum InternalOperation {
 
-    ADD_NUMBER(Operation.ADD_NUMBER, (byte) 0),
-    ADD_SCALAR(Operation.ADD_SCALAR, (byte) 1),
-    MULTIPLY_SCALAR_1(Operation.MULTIPLY_SCALAR_1, (byte) 2);
+    ADD_NUMBER((byte) 0),
+    ADD_SCALAR((byte) 1),
+    MULTIPLY_SCALAR_1((byte) 2);
 
-    private Operation bukkit;
+    private Object bukkit;
     private byte internal;
 
-    InternalOperation(Operation bukkit, byte internal) {
-        this.bukkit = bukkit;
+    InternalOperation(byte internal) {
         this.internal = internal;
     }
 
     public Operation getBukkit() {
-        return bukkit;
+        if (bukkit == null) {
+            bukkit = Operation.valueOf(name());
+        }
+        return (Operation) bukkit;
     }
 
     public byte getInternal() {
