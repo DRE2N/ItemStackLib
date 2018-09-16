@@ -29,13 +29,12 @@ public class ItemUtil {
     static InternalsProvider internals;
 
     static {
+        String packageName = ItemUtil.class.getPackage().getName();
+        String internalsName = CompatibilityHandler.getInstance().getInternals().toString();
         try {
-            String packageName = ItemUtil.class.getPackage().getName();
-            String internalsName = CompatibilityHandler.getInstance().getInternals().name();
             internals = (InternalsProvider) Class.forName(packageName + "." + internalsName).newInstance();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException exception) {
-            Bukkit.getLogger().log(Level.WARNING, "ItemUtil could not find a valid implementation for " + Bukkit.getVersion() + ".");
-            internals = new FallbackProvider();
+            Bukkit.getLogger().log(Level.SEVERE, "ItemUtil could not find a valid implementation for " + internalsName + ".");
         }
     }
 
