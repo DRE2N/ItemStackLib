@@ -39,7 +39,7 @@ String textureFromSkull = ItemUtil.getTextureValue(head);
         <dependency>
             <groupId>de.erethon</groupId>
             <artifactId>itemstacklib</artifactId>
-            <version>2.0</version>
+            <version>2.0.1</version>
         </dependency>
     </dependencies>
     <repositories>
