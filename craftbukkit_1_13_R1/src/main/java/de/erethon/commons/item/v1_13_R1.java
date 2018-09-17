@@ -95,7 +95,6 @@ class v1_13_R1 extends InternalsProvider {
         }
 
         tag.set("AttributeModifiers", modifiers);
-        nmsStack.setTag(tag);
 
         return CraftItemStack.asBukkitCopy(nmsStack);
     }
@@ -113,7 +112,7 @@ class v1_13_R1 extends InternalsProvider {
         }
         return modifier;
     }
-    
+
     @Override
     String getTextureValue(ItemStack item) {
         net.minecraft.server.v1_13_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
@@ -161,7 +160,6 @@ class v1_13_R1 extends InternalsProvider {
         skullOwner.set("Properties", properties);
 
         tag.set("SkullOwner", skullOwner);
-        nmsStack.setTag(tag);
 
         return CraftItemStack.asBukkitCopy(nmsStack);
     }

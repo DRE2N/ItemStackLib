@@ -95,7 +95,6 @@ class v1_13_R2 extends InternalsProvider {
         }
 
         tag.set("AttributeModifiers", modifiers);
-        nmsStack.setTag(tag);
 
         return CraftItemStack.asBukkitCopy(nmsStack);
     }
@@ -161,7 +160,6 @@ class v1_13_R2 extends InternalsProvider {
         skullOwner.set("Properties", properties);
 
         tag.set("SkullOwner", skullOwner);
-        nmsStack.setTag(tag);
 
         return CraftItemStack.asBukkitCopy(nmsStack);
     }
