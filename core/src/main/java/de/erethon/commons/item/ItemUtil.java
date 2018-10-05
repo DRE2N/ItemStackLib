@@ -35,6 +35,7 @@ public class ItemUtil {
             internals = (InternalsProvider) Class.forName(packageName + "." + internalsName).newInstance();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException exception) {
             Bukkit.getLogger().log(Level.SEVERE, "ItemUtil could not find a valid implementation for " + internalsName + ".");
+            internals = new InternalsProvider();
         }
     }
 
